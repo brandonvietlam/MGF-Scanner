@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  *
@@ -48,9 +50,11 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         findMatches = new javax.swing.JButton();
         fileName = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        progressBar = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MGF Scanner");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         fileButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         fileButton.setText("choose .mgf file");
@@ -107,6 +111,11 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jLabel2.setText("2019 Brandon Lam");
 
+        progressBar.setForeground(new java.awt.Color(51, 255, 51));
+        progressBar.setEnabled(false);
+        progressBar.setIndeterminate(true);
+        progressBar.setVisible(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -114,64 +123,74 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel2))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(massInput, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
-                            .addComponent(thresholdInput)
-                            .addComponent(minIntensityInput))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(massexlabel)
-                            .addComponent(massthresholdexlabel)
-                            .addComponent(minintensityexlabel)
-                            .addComponent(minintensitylabel)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(masslabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(massthresholdlabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(findMatches, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(fileButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(fileName, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(massInput, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                                    .addComponent(thresholdInput)
+                                    .addComponent(minIntensityInput))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(massexlabel)
+                                    .addComponent(massthresholdexlabel)
+                                    .addComponent(minintensityexlabel)
+                                    .addComponent(minintensitylabel)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(masslabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(massthresholdlabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap(75, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(fileButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fileName, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(findMatches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fileName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(massexlabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(massthresholdlabel)
-                        .addGap(1, 1, 1)
-                        .addComponent(massthresholdexlabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(minintensitylabel)
-                        .addGap(2, 2, 2)
-                        .addComponent(minintensityexlabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(fileName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(fileButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(fileButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(massInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(masslabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
                         .addComponent(thresholdInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
-                        .addComponent(minIntensityInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(minIntensityInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(massexlabel)
+                        .addGap(16, 16, 16)
+                        .addComponent(massthresholdlabel)
+                        .addGap(1, 1, 1)
+                        .addComponent(massthresholdexlabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(minintensitylabel)
+                        .addGap(2, 2, 2)
+                        .addComponent(minintensityexlabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(findMatches)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2))
         );
@@ -194,7 +213,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
             fileName.setText(thing.getName());
         }
         else{
-            fileName.setText("No File Selected!");
+            fileName.setText("no file selected!");
         }
         
     }//GEN-LAST:event_fileButtonActionPerformed
@@ -208,23 +227,41 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_thresholdInputActionPerformed
 
     private void findMatchesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findMatchesActionPerformed
+        
         File thing = fileChooser.getSelectedFile();
         
-        float mass = Float.parseFloat(massInput.getText());
-        float threshold = Float.parseFloat(thresholdInput.getText());
-        float minIntensity = Float.parseFloat(minIntensityInput.getText());
-                
+        float mass = 0;
+        float threshold = 0;
+        float minIntensity = 0;
         String outYay = "";
-        try {
-            outYay = scan(mass,threshold,minIntensity,thing);
-        } catch (IOException ex) {
-            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, ex);
+        try{
+        mass = Float.parseFloat(massInput.getText());
+        threshold = Float.parseFloat(thresholdInput.getText());
+        minIntensity = Float.parseFloat(minIntensityInput.getText());
+        thing = fileChooser.getSelectedFile();
+        if(thing==null){
+            fileName.setText("no file selected!");
+            return;
         }
-        
+        progressBar.setEnabled(true);
+        progressBar.setVisible(true);
+        outYay = scan(mass,threshold,minIntensity,thing);
+        }
+        catch(NumberFormatException e){
+            fileName.setText("missing/invalid input!");
+            progressBar.setVisible(false);
+            return;
+        } 
+        catch (Exception e){
+            fileName.setText("unknown error!");
+            progressBar.setVisible(false);
+            return;
+        }
+        fileName.setText("");
+            
         String date = outYay.substring(0,outYay.indexOf("\n"));
         new output(outYay, thing.getName(), date).setVisible(true);
-        
-        //System.out.println(outYay);
+        progressBar.setVisible(false);
     }//GEN-LAST:event_findMatchesActionPerformed
 
     private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
@@ -280,33 +317,52 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 	while (mgf.hasNext()) {
 		String y = "";
 
-		String line = mgf.nextLine();
+		String line = mgf.nextLine().toUpperCase();
 
+                //goes to first BEGIN IONS before info
 		while (!line.equals("BEGIN IONS") && mgf.hasNext()) {
-			line = mgf.nextLine();
+			line = mgf.nextLine().toUpperCase();
 		}
 		if (!mgf.hasNext()) {
 			break;
 		}
 
-		line = mgf.nextLine();
-		int index1 = line.indexOf("SpectrumID: ") + 13;
-		int index2 = line.substring(index1).indexOf("\";") + index1;
-                float maxIntensity = 0;
-		int SpectrumID = Integer.parseInt(line.substring(index1, index2));
-
-		for (int i = 0; i < 4; i++) {
-			mgf.nextLine();
-		}
+                //obtaining spectrumID #
+                while(!line.contains("SPECTRUM")){
+                    line = mgf.nextLine().toUpperCase();
+                }
                 
+                line = line.substring(line.indexOf("SPECTRUM"));
+                Pattern p = Pattern.compile("\\d+");
+                
+                Matcher m = p.matcher(line);
+                
+                int SpectrumID = 0;
+                if(m.find()){
+                    SpectrumID = Integer.parseInt(m.group());
+                }
+
+                //getting scan #
+		while (!line.contains("SCANS=")) {
+                        line = mgf.nextLine().toUpperCase();
+		}
+                line = line.substring(line.indexOf("SCANS="));
+                p = Pattern.compile("\\d+");
+                m = p.matcher(line);
+                
+                int scanNo = 0;
+                if(m.find()){
+                    scanNo = Integer.parseInt(m.group());
+                }
                 
                 //determine highest intensity
                 //store input (if meets threshold) in string to be retrieved later
                 String input = "";
-		while (!line.equals("END IONS")) {
+                float maxIntensity = 0;
+		while (!line.equals("END IONS") && mgf.hasNext()) {
 			line = mgf.nextLine();
 
-			if (line.equals("END IONS")) {
+			if (line.equals("END IONS") || !mgf.hasNext()) {
                             break;
 			}
                         
@@ -346,7 +402,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
             }
                 
 		if (y.length() > 0) {
-			output += "\nSpectrum ID " + SpectrumID + "\n" + y;
+			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + y;
 			y = "";
 		}
 
@@ -375,6 +431,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
     private javax.swing.JTextField minIntensityInput;
     private javax.swing.JLabel minintensityexlabel;
     private javax.swing.JLabel minintensitylabel;
+    public javax.swing.JProgressBar progressBar;
     private javax.swing.JTextField thresholdInput;
     // End of variables declaration//GEN-END:variables
 
