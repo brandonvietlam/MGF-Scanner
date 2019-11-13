@@ -2,7 +2,6 @@ package learn;
 
 import java.awt.Cursor;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -199,11 +198,13 @@ public class outputMS2 extends javax.swing.JFrame {
 
     //assumed that ms2 scan no + 1 = ms3 scan no
     public String compare(File ms3, String ms2output) throws IOException, FileNotFoundException{
+        long begin = System.currentTimeMillis();
+        
         Pattern p = Pattern.compile("\\d+");
         String output = "";
         
         output+=time+"\n";
-        output+="MS3 File: "+ms3.getName()+"\n";
+        output+="MS3 File: "+ms3.getName()+"\n\n";
         
         Scanner readms3 = new Scanner(ms3);
         String ms3input = "";
@@ -232,9 +233,12 @@ public class outputMS2 extends javax.swing.JFrame {
                 
                 
             }
-            
+           
+           int diffms23 = 1;
+           int ms23 = ms2 + diffms23;
+           
            if(ms3input.indexOf("\""+(ms2+1)+"\"")>0){ 
-                output+="MS2: "+ms2+" MS3: "+ms2+1+"\n";
+                output+="MS2: "+ms2+" MS3: "+ms23+"\n";
            }
            
            if(readms2.hasNext()){
@@ -242,6 +246,11 @@ public class outputMS2 extends javax.swing.JFrame {
            }
            
        }
+        
+       long end = System.currentTimeMillis();
+	double timez = (end - begin) / 1000.0;
+	output += "Runtime: " + timez + " seconds";
+        
        return output;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
