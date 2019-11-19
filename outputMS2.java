@@ -2,7 +2,9 @@ package learn;
 
 import java.awt.Cursor;
 import java.io.*;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -202,6 +204,7 @@ public class outputMS2 extends javax.swing.JFrame {
         
         Pattern p = Pattern.compile("\\d+");
         String output = "";
+        TreeSet<String> uniqueMatches = new TreeSet<String>();
         
         output+=time+"\n";
         output+="MS3 File: "+ms3.getName()+"\n\n";
@@ -219,7 +222,20 @@ public class outputMS2 extends javax.swing.JFrame {
            while (!line.contains("SCANS: ")) {
                line = readms2.nextLine().toUpperCase();
                
-               if(!readms2.hasNext() || line.contains("Runtime")){return output;}
+               if(!readms2.hasNext() || line.contains("Runtime") || line.contains("# Unique")){
+                    Iterator it = uniqueMatches.iterator();
+                    while(it.hasNext()){
+                        output += (String) it.next();
+                    }
+                    
+                    output += "\n";
+                    
+                    long end = System.currentTimeMillis();
+                    double timez = (end - begin) / 1000.0;
+                    output += "Runtime: " + timez + " seconds";
+        
+                    return output;
+               }
            }
            
            line = line.substring(line.indexOf("SCANS:"));
@@ -229,16 +245,14 @@ public class outputMS2 extends javax.swing.JFrame {
            int ms2 = 0;
             if(m.find()){
                 ms2 = Integer.parseInt(m.group());
-                System.out.println("ms2val:   "+ms2);
-                
                 
             }
            
            int diffms23 = 1;
            int ms23 = ms2 + diffms23;
            
-           if(ms3input.indexOf("\""+(ms2+1)+"\"")>0){ 
-                output+="MS2: "+ms2+" MS3: "+ms23+"\n";
+           if(ms3input.indexOf("\""+(ms2+1)+"\"")>0){
+               uniqueMatches.add("MS2: "+ms2+" MS3: "+ms23+"\n");
            }
            
            if(readms2.hasNext()){
@@ -246,10 +260,6 @@ public class outputMS2 extends javax.swing.JFrame {
            }
            
        }
-        
-       long end = System.currentTimeMillis();
-	double timez = (end - begin) / 1000.0;
-	output += "Runtime: " + timez + " seconds";
         
        return output;
     }
