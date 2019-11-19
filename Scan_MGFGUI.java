@@ -393,7 +393,9 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 	long begin = System.currentTimeMillis();
 
 	String output = "";
-
+        HashSet<Integer> uniqueSpectrumID = new HashSet<Integer>();
+        HashSet<Integer> uniqueScanNo = new HashSet<Integer>();
+        
 	DateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 	Date date = new Date();
 	output += sdf.format(date) + "\n";
@@ -492,12 +494,19 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 
 		if (y.length() > 0) {
 			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + y;
+                        uniqueSpectrumID.add(SpectrumID);
+                        uniqueScanNo.add(scanNo);
 			y = "";
 		}
 
 	}
         
 	output += "\n";
+        
+        output += "# Unique SpectrumID: " + uniqueSpectrumID.size()+"\n";
+        output += "# Unique Scan Numbers: " + uniqueScanNo.size()+"\n";
+        output += "\n";
+        
 	long end = System.currentTimeMillis();
 	double time = (end - begin) / 1000.0;
 	output += "Runtime: " + time + " seconds";
