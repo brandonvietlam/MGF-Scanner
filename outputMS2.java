@@ -350,7 +350,10 @@ public class outputMS2 extends javax.swing.JFrame {
                            double diff = ms2mass - ms3mass;
                            
                            if(Math.abs(diff) <= .001){
-                              uniqueMatches.add("MS2: "+ms2ScanNo+" MS3: "+ms3ScanNo+"\n"+"MS2 mass: "+ms2MassLines[0]+" MS3 mass: "+ms3mass+"\n\n");
+                              uniqueMatches.add("MS2#: "+ms2ScanNo+" MS3#: "+ms3ScanNo+"\n"+
+                                                "MS2: "+line+"\n"+
+                                                "MS3: "+ms3mass+"\n\n");
+               
                           }
                            
                            line = readms2.nextLine();

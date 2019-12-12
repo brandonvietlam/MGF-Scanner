@@ -43,7 +43,6 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MGF Scanner");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(500, 400));
 
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -71,13 +70,13 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 
         massthresholdlabel.setText("mass threshold [+/-]");
 
-        massthresholdexlabel.setText("(ex: 1.234)");
+        massthresholdexlabel.setText("(ex: 1.0)");
 
-        minintensityexlabel.setText("(ex: 50.0)");
+        minintensityexlabel.setText("(ex: 20.0)");
 
         masslabel.setText("mass");
 
-        massexlabel.setText("(ex: 569.0)");
+        massexlabel.setText("(ex: 569.5)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -86,9 +85,9 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(massInput)
                     .addComponent(thresholdInput)
-                    .addComponent(minIntensityInput, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(minIntensityInput, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                    .addComponent(massInput))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(massthresholdexlabel)
@@ -158,7 +157,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(fileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fileName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         findMatches.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -209,7 +208,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(openOutputMS2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -331,6 +330,8 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         }
         else{
             fileName.setText("no file selected!");
+            Cursor cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+            this.setCursor(cursor);
             return;
         }
         
@@ -338,17 +339,13 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         this.setCursor(cursor);
         
         try {
-            Scanner readExistingMS2 = new Scanner(thing);
             
-            String outYay = "";
-            while(readExistingMS2.hasNext()){
-                outYay+=readExistingMS2.nextLine()+"\n";
-            }
-            String date = outYay.substring(0,outYay.indexOf("\n"));
-            new outputMS2(outYay, thing.getName(), date).setVisible(true);
+            new outputMS2(thing, thing.getName()).setVisible(true);
         } 
         catch (FileNotFoundException ex) {
             fileName.setText("invalid MS2 file!");
+            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -448,7 +445,12 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 
                 //determine highest intensity
                 //store input (if meets threshold) in string to be retrieved later
+                //input contains lines with valid m/z values
+                //peaks contains all lines of input
+                
                 String input = "";
+                ArrayList<String> peaks = new ArrayList<String>();
+                
                 float maxIntensity = 0;
 		while (!line.equals("END IONS") && mgf.hasNext()) {
 			line = mgf.nextLine();
@@ -457,6 +459,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                             break;
 			}
                         
+                        peaks.add(line);
                         String[] pair = line.split(" ");
                         float val1 = Float.parseFloat(pair[0]);
                         float val2 = Float.parseFloat(pair[1]);
@@ -472,25 +475,41 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 		}
                 
                 //now processing input if it met the mass threshold
+                
+                //if met, start printing out all m/z & intensities
+                boolean showAllPeaks = false;
+                
                 String[] inputz = {};
                 if(input.length()>0){
                     
-               
-                inputz = input.split(",");
-                for(String linez: inputz){
-                    String[] pair = linez.split(" ");
-
-                    float val1 = Float.parseFloat(pair[0]);
-                    float val2 = Float.parseFloat(pair[1]);
+                    inputz = input.split(",");
+                    for(String linez: inputz){
+                        String[] pair = linez.split(" ");
+                        
+                        float val1 = Float.parseFloat(pair[0]);
+                        float val2 = Float.parseFloat(pair[1]);
                     
-                    float percentIntensity = val2/maxIntensity;
+                        float percentIntensity = val2/maxIntensity;
                     
-                    if (percentIntensity >= (minIntensity/100)) {
-                        y = y + pair[0] + " " + pair[1] + " ("+ percentIntensity*100 + "%) " + "\n";
+                        if (percentIntensity >= (minIntensity/100)) {
+                            y = y +"-"+pair[0] + " " + pair[1] + " ("+ percentIntensity*100 + "%) " + "\n";
+                        
+                            showAllPeaks = true;
+                        }
+                    
                     }
-                    
                 }
-            }
+                
+                if(showAllPeaks){
+                    String newPeaks = "";
+                    
+                    for(int i=0; i<peaks.size(); i++){
+                        String[] lineMZ = peaks.get(i).split(" ");
+                        float allPercentIntensity  = Float.parseFloat(lineMZ[1])/maxIntensity;
+                        newPeaks = lineMZ[0]+" "+lineMZ[1]+" ("+allPercentIntensity*100+"%)\n";
+                        y = y + newPeaks;
+                    }
+                }
                 
 		if (y.length() > 0) {
 			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + y;
@@ -501,8 +520,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 
 	}
         
-	output += "\n";
-        
+        output += "\n";
         output += "# Unique SpectrumID: " + uniqueSpectrumID.size()+"\n";
         output += "# Unique Scan Numbers: " + uniqueScanNo.size()+"\n";
         output += "\n";
