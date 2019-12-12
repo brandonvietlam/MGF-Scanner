@@ -2,6 +2,10 @@ package learn;
 
 import java.awt.Cursor;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
@@ -31,21 +35,44 @@ public class outputMS2 extends javax.swing.JFrame {
         initComponents();
         
     }
+    
+    public outputMS2(File x, String y) throws FileNotFoundException, IOException{
+        
+        String lines = Files.readString(Paths.get(x.getAbsolutePath()));
+        
+        String date = lines.substring(0,lines.indexOf("\n"));
+
+        output = lines;
+        fileName = y;
+        time = date.replaceAll(":", ";");
+        
+        initComponents();
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        fileChooser = new javax.swing.JFileChooser();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
         saveFile = new javax.swing.JButton();
         fileOut = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         compareMS3 = new javax.swing.JButton();
-        fileChooser = new javax.swing.JFileChooser();
+        nInput = new javax.swing.JTextField();
+        nLabel = new javax.swing.JLabel();
+        nexLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("output MS2");
-        setPreferredSize(new java.awt.Dimension(500, 370));
+
+        fileChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileChooserActionPerformed(evt);
+            }
+        });
 
         jEditorPane1.setFont(new java.awt.Font("Lucida Console", 0, 14)); // NOI18N
         jEditorPane1.setText(output);
@@ -60,6 +87,26 @@ public class outputMS2 extends javax.swing.JFrame {
 
         fileOut.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(fileOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(saveFile))
+            .addComponent(jScrollPane1)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(saveFile, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(fileOut, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
         compareMS3.setText("choose MS3 file to compare");
         compareMS3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,11 +114,48 @@ public class outputMS2 extends javax.swing.JFrame {
             }
         });
 
-        fileChooser.addActionListener(new java.awt.event.ActionListener() {
+        nInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        nInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileChooserActionPerformed(evt);
+                nInputActionPerformed(evt);
             }
         });
+
+        nLabel.setText("# top MS2 peaks");
+
+        nexLabel.setText("(ex: 3)");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(compareMS3))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(nInput, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nexLabel)
+                    .addComponent(nLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
+                .addGap(161, 161, 161))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(nLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(13, 13, 13))
+                        .addComponent(nexLabel)))
+                .addGap(7, 7, 7)
+                .addComponent(compareMS3)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -79,35 +163,26 @@ public class outputMS2 extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-                    .addComponent(saveFile, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(fileOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(compareMS3)))
-                .addGap(10, 10, 10))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 500, Short.MAX_VALUE)))
+                    .addGap(0, 520, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
-                .addGap(1, 1, 1)
-                .addComponent(saveFile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(fileOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(compareMS3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(58, 58, 58))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 370, Short.MAX_VALUE)))
+                    .addGap(0, 406, Short.MAX_VALUE)))
         );
 
         pack();
@@ -127,6 +202,10 @@ public class outputMS2 extends javax.swing.JFrame {
         
     }//GEN-LAST:event_saveFileActionPerformed
 
+    private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
+
+    }//GEN-LAST:event_fileChooserActionPerformed
+
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
         String userDirLocation = System.getProperty("user.dir");
         File userDir = new File(userDirLocation);
@@ -143,28 +222,34 @@ public class outputMS2 extends javax.swing.JFrame {
         else{
             fileOut.setText("no file selected!");
         }
-        
+
         Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
         this.setCursor(cursor);
-        
+
         String outYay = null;
+        cursor = new Cursor(Cursor.WAIT_CURSOR);
+        this.setCursor(cursor);
         try {
-            cursor = new Cursor(Cursor.WAIT_CURSOR);
-            this.setCursor(cursor);
-            outYay = compare(thing, jEditorPane1.getText());
+            outYay = compare(thing, jEditorPane1.getText(), Integer.parseInt(nInput.getText()));
         } catch (IOException ex) {
-            Logger.getLogger(outputMS2.class.getName()).log(Level.SEVERE, null, ex);
+            
+            if(nInput.getText()==""){
+                fileOut.setText("No # of peaks specified!");
+            }
+            else{
+                fileOut.setText("Unknown Error!");
+            }
         }
-        
+
         new outputMS3(outYay, thing.getName(), time).setVisible(true);
-        
+
         cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         this.setCursor(cursor);
     }//GEN-LAST:event_compareMS3ActionPerformed
 
-    private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
-
-    }//GEN-LAST:event_fileChooserActionPerformed
+    private void nInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nInputActionPerformed
 
     public void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -179,15 +264,11 @@ public class outputMS2 extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(outputMS2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(outputMS2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(outputMS2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(outputMS2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -198,77 +279,125 @@ public class outputMS2 extends javax.swing.JFrame {
         
     }
 
-    //assumed that ms2 scan no + 1 = ms3 scan no
-    public String compare(File ms3, String ms2output) throws IOException, FileNotFoundException{
+    public String compare(File ms3, String ms2output, int n) throws IOException, FileNotFoundException{
+        
         long begin = System.currentTimeMillis();
         
         Pattern p = Pattern.compile("\\d+");
         String output = "";
         TreeSet<String> uniqueMatches = new TreeSet<String>();
-        
+        ArrayList<String[]> ms3Arry = new ArrayList<String[]>();
+                
         output+=time+"\n";
-        output+="MS3 File: "+ms3.getName()+"\n\n";
-        
-        Scanner readms3 = new Scanner(ms3);
-        String ms3input = "";
-        while(readms3.hasNext()){
-            ms3input += readms3.nextLine()+"\n";
-        }
+        output+="MS3 File: "+ms3.getName()+"\n";
+        output+="# top peaks: "+n+"\n\n";
         
         Scanner readms2 = new Scanner(ms2output);
         String line = "";
        
-        while (readms2.hasNext()){
-           while (!line.contains("SCANS: ")) {
-               line = readms2.nextLine().toUpperCase();
-               
-               if(!readms2.hasNext() || line.contains("Runtime") || line.contains("# Unique")){
-                    Iterator it = uniqueMatches.iterator();
-                    while(it.hasNext()){
-                        output += (String) it.next();
-                    }
-                    
-                    output += "\n";
-                    
-                    long end = System.currentTimeMillis();
-                    double timez = (end - begin) / 1000.0;
-                    output += "Runtime: " + timez + " seconds";
+        Scanner readms3 = new Scanner(ms3);
+        readms3.nextLine();//skip the heading
+        while(readms3.hasNext()){
+            ms3Arry.add(readms3.nextLine().split("\"\t\""));
+        }
         
-                    return output;
-               }
+        while (readms2.hasNext()){
+           
+           //stop at end of file
+           if(!readms2.hasNext() || line.contains("Runtime") || line.contains("# Unique")){
+               break;
            }
            
+           if(line.contains("SCANS")){
+               line = readms2.nextLine().toUpperCase();
+           }
+           //travel to the next set of [m/z][intensity] pairs
+           while (!line.contains("SCANS") && readms2.hasNext()) {
+               line = readms2.nextLine().toUpperCase();
+           }
+           if(!readms2.hasNext()){
+               break;
+           }
+           
+           //get the scan number
            line = line.substring(line.indexOf("SCANS:"));
            //p = Pattern.compile("\\d+");
            Matcher m = p.matcher(line);
                 
-           int ms2 = 0;
-            if(m.find()){
-                ms2 = Integer.parseInt(m.group());
-                
+           int ms2ScanNo = 0;
+           if(m.find()){
+                ms2ScanNo = Integer.parseInt(m.group());
             }
            
-           int diffms23 = 1;
-           int ms23 = ms2 + diffms23;
+           //go past initial line w spectrum no
+           readms2.nextLine();
            
-           if(ms3input.indexOf("\""+(ms2+1)+"\"")>0){
-               uniqueMatches.add("MS2: "+ms2+" MS3: "+ms23+"\n");
+           //start reading in pairs
+           //for each pair, reference with ms3
+           int ms2scanNo;
+           
+           for(int i=0; i<ms3Arry.size(); i++){
+               
+               String[] pair = ms3Arry.get(i);
+               int ms3ScanNo = Integer.parseInt(pair[6]);
+               double ms3mass = Double.parseDouble(pair[18]);
+               int scanDiff = ms3ScanNo - ms2ScanNo;
+               
+               System.out.println(scanDiff);
+               
+               if(scanDiff <= n && scanDiff >= 1){
+                   line = readms2.nextLine();
+                   
+                   while(!line.equals("") && !line.contains("#") && !line.contains("SPECTRUM")){
+                       //System.out.println("or are we stuck here?");
+                       String[] ms2MassLines = line.split(" ");
+                       double ms2mass = Double.parseDouble(ms2MassLines[0]);
+                       
+                           double diff = ms2mass - ms3mass;
+                           
+                           if(Math.abs(diff) <= .001){
+                              System.out.println(Arrays.toString(ms2MassLines));
+                              System.out.println(diff+"\n"+ms2ScanNo+"; "+ms2MassLines[0]+"\n"+ms3ScanNo+"; "+ms3mass+"\n");
+                              
+                              uniqueMatches.add("MS2: "+ms2ScanNo+" MS3: "+ms3ScanNo+"\n"+"MS2 mass: "+ms2MassLines[0]+" MS3 mass: "+ms3mass+"\n\n");
+                          }
+                           
+                           line = readms2.nextLine();
+                           if(line.equals("") && line.contains("#") && line.contains("Runtime")){
+                                break;
+                           }
+                           
+                       }
+                   line = readms2.nextLine();
+                   }
+               }
+               
            }
-           
-           if(readms2.hasNext()){
-                line = readms2.nextLine().toUpperCase();
-           }
-           
-       }
         
-       return output;
+        Iterator it = uniqueMatches.iterator();
+            while(it.hasNext()){
+                output += (String) it.next();
+            }
+                
+            output += "\n";
+            
+            long end = System.currentTimeMillis();
+            double timez = (end - begin) / 1000.0;
+            output += "Runtime: " + timez + " seconds";
+            return output;
+        
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton compareMS3;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel fileOut;
     private javax.swing.JEditorPane jEditorPane1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField nInput;
+    private javax.swing.JLabel nLabel;
+    private javax.swing.JLabel nexLabel;
     private javax.swing.JButton saveFile;
     // End of variables declaration//GEN-END:variables
 }
