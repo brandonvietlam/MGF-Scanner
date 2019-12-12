@@ -293,7 +293,22 @@ public class outputMS2 extends javax.swing.JFrame {
         String line = "";
        
         Scanner readms3 = new Scanner(ms3);
-        readms3.nextLine();//skip the heading
+        
+        //try to find the appropriate column
+        //"First Scan"
+        //"m/z [Da]"
+        String[] heading = readms3.nextLine().split("\"\t\"");
+        int scanCol = -1;
+        int massCol = -1;
+        for(int i=0; i<heading.length; i++){
+            if(heading[i].equals("First Scan"))
+                scanCol = i;
+            if(heading[i].equals("m/z [Da]"))
+                massCol = i;
+        }
+        
+        
+        
         while(readms3.hasNext()){
             ms3Arry.add(readms3.nextLine().split("\"\t\""));
         }
@@ -336,8 +351,9 @@ public class outputMS2 extends javax.swing.JFrame {
            for(int i=0; i<ms3Arry.size(); i++){
                
                String[] pair = ms3Arry.get(i);
-               int ms3ScanNo = Integer.parseInt(pair[6]);
-               double ms3mass = Double.parseDouble(pair[18]);
+
+               int ms3ScanNo = Integer.parseInt(pair[scanCol]);
+               double ms3mass = Double.parseDouble(pair[massCol]);
                int scanDiff = ms3ScanNo - ms2ScanNo;
                
                if(scanDiff <= n && scanDiff >= 1){
