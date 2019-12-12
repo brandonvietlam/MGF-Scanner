@@ -5,12 +5,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +35,7 @@ public class outputMS2 extends javax.swing.JFrame {
     
     public outputMS2(File x, String y) throws FileNotFoundException, IOException{
         
-        String lines = Files.readString(Paths.get(x.getAbsolutePath()));
+        String lines = new String ( Files.readAllBytes(Paths.get(x.getAbsolutePath())) );
         
         String date = lines.substring(0,lines.indexOf("\n"));
 
@@ -233,7 +230,7 @@ public class outputMS2 extends javax.swing.JFrame {
             outYay = compare(thing, jEditorPane1.getText(), Integer.parseInt(nInput.getText()));
         } catch (IOException ex) {
             
-            if(nInput.getText()==""){
+            if(nInput.getText().equals("")){
                 fileOut.setText("No # of peaks specified!");
             }
             else{
@@ -343,22 +340,16 @@ public class outputMS2 extends javax.swing.JFrame {
                double ms3mass = Double.parseDouble(pair[18]);
                int scanDiff = ms3ScanNo - ms2ScanNo;
                
-               System.out.println(scanDiff);
-               
                if(scanDiff <= n && scanDiff >= 1){
                    line = readms2.nextLine();
                    
                    while(!line.equals("") && !line.contains("#") && !line.contains("SPECTRUM")){
-                       //System.out.println("or are we stuck here?");
                        String[] ms2MassLines = line.split(" ");
                        double ms2mass = Double.parseDouble(ms2MassLines[0]);
                        
                            double diff = ms2mass - ms3mass;
                            
                            if(Math.abs(diff) <= .001){
-                              System.out.println(Arrays.toString(ms2MassLines));
-                              System.out.println(diff+"\n"+ms2ScanNo+"; "+ms2MassLines[0]+"\n"+ms3ScanNo+"; "+ms3mass+"\n");
-                              
                               uniqueMatches.add("MS2: "+ms2ScanNo+" MS3: "+ms3ScanNo+"\n"+"MS2 mass: "+ms2MassLines[0]+" MS3 mass: "+ms3mass+"\n\n");
                           }
                            
