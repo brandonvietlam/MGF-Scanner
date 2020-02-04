@@ -1,4 +1,4 @@
-package learn;
+ 
 
 import java.awt.Cursor;
 import java.io.*;
@@ -169,7 +169,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jLabel2.setText("2019 Brandon Lam");
+        jLabel2.setText("2020 Brandon Lam");
 
         openOutputMS2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         openOutputMS2.setText("compare existing MS2 scan output with MS3");
@@ -430,9 +430,17 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                     SpectrumID = Integer.parseInt(m.group());
                 }
 
+                //getting pepmass
+                while (!line.contains("PEPMASS=")){
+                    line = mgf.nextLine().toUpperCase();
+                }
+                line = line.substring(line.indexOf("PEPMASS=")+8);
+                String[] tempLine = line.split(" ");
+                double pepMass = Double.parseDouble(tempLine[0]);
+                
                 //getting scan #
 		while (!line.contains("SCANS=")) {
-                        line = mgf.nextLine().toUpperCase();
+                    line = mgf.nextLine().toUpperCase();
 		}
                 line = line.substring(line.indexOf("SCANS="));
                 p = Pattern.compile("\\d+");
@@ -512,7 +520,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 }
                 
 		if (y.length() > 0) {
-			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + y;
+			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + "PEPMASS: " + pepMass + "\n" + y;
                         uniqueSpectrumID.add(SpectrumID);
                         uniqueScanNo.add(scanNo);
 			y = "";

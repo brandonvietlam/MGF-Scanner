@@ -1,4 +1,4 @@
-package learn;
+ 
 
 import java.awt.Cursor;
 import java.io.*;
@@ -58,9 +58,12 @@ public class outputMS2 extends javax.swing.JFrame {
         fileOut = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         compareMS3 = new javax.swing.JButton();
-        nInput = new javax.swing.JTextField();
+        peakInput = new javax.swing.JTextField();
         nLabel = new javax.swing.JLabel();
         nexLabel = new javax.swing.JLabel();
+        daltonInput = new javax.swing.JTextField();
+        nLabel1 = new javax.swing.JLabel();
+        nexLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("output MS2");
@@ -111,16 +114,27 @@ public class outputMS2 extends javax.swing.JFrame {
             }
         });
 
-        nInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        nInput.addActionListener(new java.awt.event.ActionListener() {
+        peakInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        peakInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nInputActionPerformed(evt);
+                peakInputActionPerformed(evt);
             }
         });
 
         nLabel.setText("# top MS2 peaks");
 
         nexLabel.setText("(ex: 3)");
+
+        daltonInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        daltonInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                daltonInputActionPerformed(evt);
+            }
+        });
+
+        nLabel1.setText("dalton threshold [+/-]");
+
+        nexLabel1.setText("(ex: 1.0)");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -131,19 +145,31 @@ public class outputMS2 extends javax.swing.JFrame {
                 .addComponent(compareMS3))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(nInput, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(daltonInput)
+                    .addComponent(peakInput, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nexLabel)
-                    .addComponent(nLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
+                    .addComponent(nLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                    .addComponent(nexLabel1)
+                    .addComponent(nLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
                 .addGap(161, 161, 161))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(daltonInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(nLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(13, 13, 13))
+                        .addComponent(nexLabel1)))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(peakInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(nLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -179,7 +205,7 @@ public class outputMS2 extends javax.swing.JFrame {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 406, Short.MAX_VALUE)))
+                    .addGap(0, 490, Short.MAX_VALUE)))
         );
 
         pack();
@@ -202,6 +228,10 @@ public class outputMS2 extends javax.swing.JFrame {
     private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
 
     }//GEN-LAST:event_fileChooserActionPerformed
+
+    private void peakInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peakInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_peakInputActionPerformed
 
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
         String userDirLocation = System.getProperty("user.dir");
@@ -227,11 +257,11 @@ public class outputMS2 extends javax.swing.JFrame {
         cursor = new Cursor(Cursor.WAIT_CURSOR);
         this.setCursor(cursor);
         try {
-            outYay = compare(thing, jEditorPane1.getText(), Integer.parseInt(nInput.getText()));
+            outYay = compare(thing, jEditorPane1.getText(), Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()));
         } catch (IOException ex) {
-            
-            if(nInput.getText().equals("")){
-                fileOut.setText("No # of peaks specified!");
+
+            if(peakInput.getText().equals("")){
+                fileOut.setText("Missing Input!");
             }
             else{
                 fileOut.setText("Unknown Error!");
@@ -244,9 +274,9 @@ public class outputMS2 extends javax.swing.JFrame {
         this.setCursor(cursor);
     }//GEN-LAST:event_compareMS3ActionPerformed
 
-    private void nInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nInputActionPerformed
+    private void daltonInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_daltonInputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nInputActionPerformed
+    }//GEN-LAST:event_daltonInputActionPerformed
 
     public void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -276,7 +306,7 @@ public class outputMS2 extends javax.swing.JFrame {
         
     }
 
-    public String compare(File ms3, String ms2output, int n) throws IOException, FileNotFoundException{
+    public String compare(File ms3, String ms2output, int n, double daltonInput) throws IOException, FileNotFoundException{
         
         long begin = System.currentTimeMillis();
         
@@ -287,7 +317,8 @@ public class outputMS2 extends javax.swing.JFrame {
                 
         output+=time+"\n";
         output+="MS3 File: "+ms3.getName()+"\n";
-        output+="# top peaks: "+n+"\n\n";
+        output+="# top peaks: "+n+"\n";
+        output+="dalton threshold: "+daltonInput+"\n\n";
         
         Scanner readms2 = new Scanner(ms2output);
         String line = "";
@@ -297,14 +328,22 @@ public class outputMS2 extends javax.swing.JFrame {
         //try to find the appropriate column
         //"First Scan"
         //"m/z [Da]"
+        //"MH+ [Da]"
+        //"Charge"
         String[] heading = readms3.nextLine().split("\"\t\"");
         int scanCol = -1;
         int massCol = -1;
+        int mhCol = -1;
+        int chargeCol = -1;
         for(int i=0; i<heading.length; i++){
             if(heading[i].equals("First Scan"))
                 scanCol = i;
             if(heading[i].equals("m/z [Da]"))
                 massCol = i;
+            if(heading[i].equals("MH+ [Da]"))
+                mhCol = i;
+            if(heading[i].equals("Charge"))
+                chargeCol = i;
         }
         
         
@@ -341,12 +380,16 @@ public class outputMS2 extends javax.swing.JFrame {
                 ms2ScanNo = Integer.parseInt(m.group());
             }
            
+           //get pepmass
+           line = readms2.nextLine().toUpperCase();
+           line = line.substring(line.indexOf("PEPMASS: ")+9);
+           double pepMass = Double.parseDouble(line);
+           
            //go past initial line w spectrum no
            readms2.nextLine();
            
            //start reading in pairs
            //for each pair, reference with ms3
-           int ms2scanNo;
            
            for(int i=0; i<ms3Arry.size(); i++){
                
@@ -354,6 +397,9 @@ public class outputMS2 extends javax.swing.JFrame {
 
                int ms3ScanNo = Integer.parseInt(pair[scanCol]);
                double ms3mass = Double.parseDouble(pair[massCol]);
+               double mh = Double.parseDouble(pair[mhCol]);
+               double charge = Integer.parseInt(pair[chargeCol]);
+               
                int scanDiff = ms3ScanNo - ms2ScanNo;
                
                if(scanDiff <= n && scanDiff >= 1){
@@ -363,13 +409,21 @@ public class outputMS2 extends javax.swing.JFrame {
                        String[] ms2MassLines = line.split(" ");
                        double ms2mass = Double.parseDouble(ms2MassLines[0]);
                        
-                           double diff = ms2mass - ms3mass;
+                           double massDiff = ms2mass - ms3mass;
                            
-                           if(Math.abs(diff) <= .001){
+                           if(Math.abs(massDiff) <= .001){
+                              //pepMass, calcMass
+                              
+                              double calcMass = (mh + 569.2 + 1.0078*charge)/(charge+1);
+                              double pepDiff = Math.abs(pepMass-calcMass);
+                              if(pepDiff <= daltonInput){
                               uniqueMatches.add("MS2#: "+ms2ScanNo+" MS3#: "+ms3ScanNo+"\n"+
+                                                "peptide mass: "+pepMass+"\n"+
+                                                "calculated mass: "+calcMass+"\n"+
+                                                "daltons: "+pepDiff+"\n"+
                                                 "MS2: "+line+"\n"+
                                                 "MS3: "+ms3mass+"\n\n");
-               
+                              }
                           }
                            
                            line = readms2.nextLine();
@@ -399,15 +453,18 @@ public class outputMS2 extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton compareMS3;
+    private javax.swing.JTextField daltonInput;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel fileOut;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField nInput;
     private javax.swing.JLabel nLabel;
+    private javax.swing.JLabel nLabel1;
     private javax.swing.JLabel nexLabel;
+    private javax.swing.JLabel nexLabel1;
+    private javax.swing.JTextField peakInput;
     private javax.swing.JButton saveFile;
     // End of variables declaration//GEN-END:variables
 }
