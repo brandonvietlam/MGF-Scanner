@@ -37,11 +37,6 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         findMatches = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        openOutputMS2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        scanOut = new javax.swing.JEditorPane();
-        fastScan = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MGF Scanner");
@@ -181,54 +176,23 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jLabel2.setText("2020 Brandon Lam");
 
-        openOutputMS2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        openOutputMS2.setText("compare existing MS2 scan output with MS3");
-        openOutputMS2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openOutputMS2ActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("output");
-
-        jScrollPane2.setViewportView(scanOut);
-
-        fastScan.setText("Fast Scan (efficient, reduces accuracy)");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel2))
-                    .addComponent(findMatches, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(openOutputMS2)
-                            .addComponent(fastScan))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(400, Short.MAX_VALUE)
+                .addComponent(jLabel2)
                 .addContainerGap())
+            .addComponent(findMatches, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(fastScan)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(findMatches)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(openOutputMS2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -252,61 +216,12 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void findMatchesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findMatchesActionPerformed
-        Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
-        this.setCursor(cursor);
-        
-        File thing = fileChooser.getSelectedFile();
-        
-        float mass = 0;
-        float threshold = 0;
-        float minIntensity = 0;
-        boolean fast = false;
-        String outYay = "";
-        
-        try{
-        mass = Float.parseFloat(massInput.getText());
-        threshold = Float.parseFloat(thresholdInput.getText());
-        minIntensity = Float.parseFloat(minIntensityInput.getText());
-        thing = fileChooser.getSelectedFile();
-        fast = fastScan.isSelected();
-        
-        outYay = scan(mass,threshold,minIntensity,fast,thing);
-        
-            if(thing==null){
-                fileName.setText("no file selected!");
-                return;
-            }
-        }
-        catch(NumberFormatException e){
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            fileName.setText("missing/invalid input!");
-            return;
-        } 
-        catch(OutOfMemoryError e){
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            fileName.setText("out of memory!");
-            return;
-        }
-        catch (Exception e){
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            fileName.setText("unknown error!");
-            return;
-        }
-        
-        String date = outYay.substring(0,outYay.indexOf("\n"));
-        new outputMS2(outYay, fast, thing.getName(), date).setVisible(true);
-        
-        cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-        this.setCursor(cursor);
-    }//GEN-LAST:event_findMatchesActionPerformed
 
     private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
 
@@ -339,44 +254,53 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_fileButtonActionPerformed
 
-    private void openOutputMS2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openOutputMS2ActionPerformed
-        String userDirLocation = System.getProperty("user.dir");
-        File userDir = new File(userDirLocation);
-
-        fileChooser = new javax.swing.JFileChooser(userDir);
-
-        int returnVal = fileChooser.showOpenDialog(this);
+    private void findMatchesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findMatchesActionPerformed
+        Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
+        this.setCursor(cursor);
 
         File thing = fileChooser.getSelectedFile();
 
-        if(thing!=null){
-            fileName.setText(thing.getName());
+        float mass = 0;
+        float threshold = 0;
+        float minIntensity = 0;
+        boolean fast = true;
+        String outYay = "";
+
+        try{
+            mass = Float.parseFloat(massInput.getText());
+            threshold = Float.parseFloat(thresholdInput.getText());
+            minIntensity = Float.parseFloat(minIntensityInput.getText());
+            thing = fileChooser.getSelectedFile();
+
+            outYay = scan(mass,threshold,minIntensity,fast,thing);
+
+            if(thing==null){
+                fileName.setText("no file selected!");
+                return;
+            }
         }
-        else{
-            fileName.setText("no file selected!");
-            Cursor cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            this.setCursor(cursor);
+        catch(NumberFormatException e){
+            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+            fileName.setText("missing/invalid input!");
             return;
         }
-        
-        Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
-        this.setCursor(cursor);
-        
-        try {
-            new outputMS2(thing, thing.getName()).setVisible(true);
-        } 
-        catch (FileNotFoundException ex) {
-            fileName.setText("invalid MS2 file!");
-            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, ex);
+        catch(OutOfMemoryError e){
             cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-        } catch (IOException ex) {
-            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, ex);
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+            fileName.setText("out of memory!");
+            return;
         }
-        
+        catch (Exception e){
+            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+            fileName.setText("unknown error!");
+            return;
+        }
+
+        String date = outYay.substring(0,outYay.indexOf("\n"));
+        new outputMS2(outYay, fast, thing, date).setVisible(true);
+
         cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         this.setCursor(cursor);
-    }//GEN-LAST:event_openOutputMS2ActionPerformed
+    }//GEN-LAST:event_findMatchesActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -426,7 +350,6 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 	output += "minimum mass: " + mass + "\n";
 	output += "mass threshold [+/-]: " + threshold + "\n";
 	output += "minimum relative intensity [%]: " + minIntensity + "\n";
-        output += "fast scan: " + fast + "\n";
         
 	while (mgf.ready()) {
 		String y = "";
@@ -571,17 +494,14 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox fastScan;
     private javax.swing.JButton fileButton;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel fileName;
     private javax.swing.JButton findMatches;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField massInput;
     private javax.swing.JLabel massexlabel;
     private javax.swing.JLabel masslabel;
@@ -590,8 +510,6 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
     private javax.swing.JTextField minIntensityInput;
     private javax.swing.JLabel minintensityexlabel;
     private javax.swing.JLabel minintensitylabel;
-    private javax.swing.JButton openOutputMS2;
-    private javax.swing.JEditorPane scanOut;
     private javax.swing.JTextField thresholdInput;
     // End of variables declaration//GEN-END:variables
 

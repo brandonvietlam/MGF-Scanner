@@ -17,6 +17,7 @@ public class outputMS2 extends javax.swing.JFrame {
     private String output;
     private boolean fast;
     private String fileName;
+    private File ms2;
     private String time;
     
     public outputMS2() {
@@ -26,10 +27,11 @@ public class outputMS2 extends javax.swing.JFrame {
         initComponents();
     }
     
-    public outputMS2(String w, boolean x, String y, String z){
+    public outputMS2(String w, boolean x, File y, String z){
         output = w;
         fast = x;
-        fileName = y;
+        fileName = y.getName();
+        ms2 = y;
         time = z.replaceAll(":", ";");
         initComponents();
         
@@ -50,7 +52,7 @@ public class outputMS2 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        fileChooser = new javax.swing.JFileChooser();
+        fileChooserMS3 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
@@ -68,9 +70,9 @@ public class outputMS2 extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("output MS2");
 
-        fileChooser.addActionListener(new java.awt.event.ActionListener() {
+        fileChooserMS3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileChooserActionPerformed(evt);
+                fileChooserMS3ActionPerformed(evt);
             }
         });
 
@@ -140,9 +142,6 @@ public class outputMS2 extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(compareMS3))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -155,11 +154,14 @@ public class outputMS2 extends javax.swing.JFrame {
                     .addComponent(nexLabel1)
                     .addComponent(nLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
                 .addGap(161, 161, 161))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(compareMS3))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(daltonInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -175,9 +177,9 @@ public class outputMS2 extends javax.swing.JFrame {
                             .addComponent(nLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(13, 13, 13))
                         .addComponent(nexLabel)))
-                .addGap(7, 7, 7)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(compareMS3)
-                .addContainerGap())
+                .addGap(7, 7, 7))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -189,10 +191,10 @@ public class outputMS2 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fileChooserMS3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 520, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -200,12 +202,12 @@ public class outputMS2 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(fileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 490, Short.MAX_VALUE)))
+                    .addComponent(fileChooserMS3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 533, Short.MAX_VALUE)))
         );
 
         pack();
@@ -225,9 +227,9 @@ public class outputMS2 extends javax.swing.JFrame {
         
     }//GEN-LAST:event_saveFileActionPerformed
 
-    private void fileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserActionPerformed
+    private void fileChooserMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooserMS3ActionPerformed
 
-    }//GEN-LAST:event_fileChooserActionPerformed
+    }//GEN-LAST:event_fileChooserMS3ActionPerformed
 
     private void peakInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peakInputActionPerformed
         // TODO add your handling code here:
@@ -236,15 +238,15 @@ public class outputMS2 extends javax.swing.JFrame {
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
         String userDirLocation = System.getProperty("user.dir");
         File userDir = new File(userDirLocation);
+        
+        fileChooserMS3 = new javax.swing.JFileChooser(userDir);
+        int returnVal = fileChooserMS3.showOpenDialog(this);
 
-        fileChooser = new javax.swing.JFileChooser(userDir);
+        File ms3 = fileChooserMS3.getSelectedFile();
 
-        int returnVal = fileChooser.showOpenDialog(this);
-
-        File thing = fileChooser.getSelectedFile();
-
-        if(thing!=null){
-            fileOut.setText(thing.getName());
+        if(ms3!=null&&ms2!=null){
+            System.out.println(ms2.getName()+", "+ms3.getName());
+            fileOut.setText(ms2.getName()+", "+ms3.getName());
         }
         else{
             fileOut.setText("no file selected!");
@@ -257,7 +259,7 @@ public class outputMS2 extends javax.swing.JFrame {
         cursor = new Cursor(Cursor.WAIT_CURSOR);
         this.setCursor(cursor);
         try {
-            outYay2 = compare(thing, output, Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()), fast);
+            outYay2 = compare(ms2, ms3, output, Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()), fast);
         } 
         catch (IOException e) {
             cursor = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -283,7 +285,7 @@ public class outputMS2 extends javax.swing.JFrame {
             return;
         }
 
-        new outputMS3(outYay2, thing.getName(), time).setVisible(true);
+        new outputMS3(outYay2, ms3.getName(), time).setVisible(true);
 
         cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         this.setCursor(cursor);
@@ -321,7 +323,7 @@ public class outputMS2 extends javax.swing.JFrame {
         
     }
 
-    public String compare(File ms3, String ms2output, int n, double daltonInput, boolean fast) throws IOException, FileNotFoundException{
+    public String compare(File ms2, File ms3, String ms2output, int n, double daltonInput, boolean fast) throws IOException, FileNotFoundException{
         
         long begin = System.currentTimeMillis();
         
@@ -333,8 +335,7 @@ public class outputMS2 extends javax.swing.JFrame {
         output+=time+"\n";
         output+="MS3 File: "+ms3.getName()+"\n";
         output+="# top peaks: "+n+"\n";
-        output+="dalton threshold: "+daltonInput+"\n";
-        output+="fast scan: "+fast+"\n\n";
+        output+="dalton threshold: "+daltonInput+"\n\n";
         
         BufferedReader readms2 = new BufferedReader(new StringReader(ms2output));
         String line = "";
@@ -402,9 +403,7 @@ public class outputMS2 extends javax.swing.JFrame {
            
            //go past initial line w spectrum no
            readms2.readLine();
-           
-           //start reading in pairs
-           //for each pair, reference with ms3
+
            
            for(int i=0; i<ms3Arry.size(); i++){
                
@@ -431,24 +430,53 @@ public class outputMS2 extends javax.swing.JFrame {
                        }
                            
                            if(withinDiff){
-                              //pepMass, calcMass
-                             
-                              double charge = Integer.parseInt(pair[chargeCol]);
-                              double calcMass = (Double.parseDouble(pair[mhCol]) + 569.2 + 1.0078*charge)/(charge+1);
-                              double pepDiff = Math.abs(pepMass-calcMass);
-                              
-                              if(pepDiff <= daltonInput){
-                                  System.out.println(""+ms2ScanNo+" "+ms3ScanNo+" "+scanDiff);
-                              String match = "MS2#: "+ms2ScanNo+" MS3#: "+ms3ScanNo+"\n"+
-                                                "peptide mass: "+pepMass+"\n"+
-                                                "calculated mass: "+calcMass+"\n"+
-                                                "daltons: "+pepDiff+"\n";
-                              if(!fast){
-                                  match = match+"MS2: "+line.substring(1)+"\n"+ "MS3: "+ms3mass+"\n";
-                              }
-                              match += "\n";
-                              uniqueMatches.add(match);
-                              }
+                                //pepMass, calcMass
+
+                                double charge = Integer.parseInt(pair[chargeCol]);
+                                double calcMass = (Double.parseDouble(pair[mhCol]) + 569.2 + 1.0078*charge)/(charge+1);
+                                double pepDiff = Math.abs(pepMass-calcMass);
+
+                                if(pepDiff <= daltonInput){
+                                //match ms2 mass w ms3 mass and print out all
+                                BufferedReader readOrigFile = new BufferedReader(new FileReader(ms2));
+                                String origLine = "";
+
+                                while(!origLine.contains("SCANS="+ms2ScanNo)){
+                                    origLine = readOrigFile.readLine();
+                                }
+                                
+                                boolean massMatch = false;
+                                ArrayList<String> matchedLines = new ArrayList<String>();
+                                origLine = readOrigFile.readLine();
+                                while(!origLine.equals("") && !origLine.contains("END")){
+                                    System.out.println("original line "+origLine);
+                                    String[] origMassLines = origLine.split(" ");
+                                    ms2mass = Double.parseDouble(origMassLines[0]);
+                                    ms3mass = Double.parseDouble(pair[massCol]);
+                                    massDiff = ms2mass - ms3mass;
+                                    if(Math.abs(massDiff) <= .001){
+                                        matchedLines.add(origLine);
+                                        massMatch = true;
+                                    }
+                                    origLine = readOrigFile.readLine();
+                                }
+
+                                if(withinDiff){
+                                String match = "MS2#: "+ms2ScanNo+" MS3#: "+ms3ScanNo+"\n"+
+                                                  "peptide mass: "+pepMass+"\n"+
+                                                  "calculated mass: "+calcMass+"\n"+
+                                                  "daltons: "+pepDiff+"\n";
+                                if(fast){
+                                    match = match+"MS2: ";
+                                    for(int j=0; j<matchedLines.size(); j++){
+                                        match = match + matchedLines.get(j) + "\n";
+                                    }
+                                    match = match+"MS3: "+ms3mass+"\n";
+                                }
+                                match += "\n";
+                                uniqueMatches.add(match);
+                                }
+                                }
                           }
                            
                            line = readms2.readLine();
@@ -464,9 +492,9 @@ public class outputMS2 extends javax.swing.JFrame {
            }
         
         Iterator it = uniqueMatches.iterator();
-            while(it.hasNext()){
-                output += (String) it.next();
-            }
+        while(it.hasNext()){
+            output += (String) it.next();
+        }
             
             long end = System.currentTimeMillis();
             double timez = (end - begin) / 1000.0;
@@ -477,7 +505,7 @@ public class outputMS2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton compareMS3;
     private javax.swing.JTextField daltonInput;
-    private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JFileChooser fileChooserMS3;
     private javax.swing.JLabel fileOut;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JPanel jPanel1;
