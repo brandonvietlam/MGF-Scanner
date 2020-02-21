@@ -1,4 +1,4 @@
-  
+ package learn;
 
 import java.awt.Cursor;
 import java.io.*;
@@ -84,7 +84,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 
         masslabel.setText("mass");
 
-        massexlabel.setText("(ex: 569.5)");
+        massexlabel.setText("(ex: 569.2)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -335,163 +335,162 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
     public String scan(float mass, float threshold, float minIntensity, boolean fast, File file) throws IOException, FileNotFoundException {
         BufferedReader mgf = new BufferedReader(new FileReader(file));
         //while/if(mgf.ready());
-        
-	long begin = System.currentTimeMillis();
 
-	String output = "";
-        HashSet<Integer> uniqueSpectrumID = new HashSet<Integer>();
-        HashSet<Integer> uniqueScanNo = new HashSet<Integer>();
-        
-	DateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-	Date date = new Date();
-	output += sdf.format(date) + "\n";
+        long begin = System.currentTimeMillis();
 
-	output += "file: " + file.getName() + "\n";
-	output += "minimum mass: " + mass + "\n";
-	output += "mass threshold [+/-]: " + threshold + "\n";
-	output += "minimum relative intensity [%]: " + minIntensity + "\n";
-        
-	while (mgf.ready()) {
-		String y = "";
+        String output = "";
+        HashSet < Integer > uniqueSpectrumID = new HashSet < Integer > ();
+        HashSet < Integer > uniqueScanNo = new HashSet < Integer > ();
 
-		String line = mgf.readLine().toUpperCase();
+        DateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        Date date = new Date();
+        output += sdf.format(date) + "\n";
 
-                //goes to first BEGIN IONS before info
-		while (!line.equals("BEGIN IONS") && mgf.ready()) {
-			line = mgf.readLine().toUpperCase();
-		}
-		if (!mgf.ready()) {
-			break;
-		}
+        output += "file: " + file.getName() + "\n";
+        output += "minimum mass: " + mass + "\n";
+        output += "mass threshold [+/-]: " + threshold + "\n";
+        output += "minimum relative intensity [%]: " + minIntensity + "\n";
 
-                //obtaining spectrumID #
-                while(!line.contains("SPECTRUM")){
-                    line = mgf.readLine().toUpperCase();
-                }
-                
-                line = line.substring(line.indexOf("SPECTRUM"));
-                Pattern p = Pattern.compile("\\d+");
-                
-                Matcher m = p.matcher(line);
-                
-                int SpectrumID = 0;
-                if(m.find()){
-                    SpectrumID = Integer.parseInt(m.group());
-                }
+        while (mgf.ready()) {
+        	String y = "";
 
-                //getting pepmass
-                while (!line.contains("PEPMASS=")){
-                    line = mgf.readLine().toUpperCase();
-                }
-                line = line.substring(line.indexOf("PEPMASS=")+8);
-                String[] tempLine = line.split(" ");
-                double pepMass = Double.parseDouble(tempLine[0]);
-                
-                //getting scan #
-		while (!line.contains("SCANS=")) {
-                    line = mgf.readLine().toUpperCase();
-		}
-                line = line.substring(line.indexOf("SCANS="));
-                p = Pattern.compile("\\d+");
-                m = p.matcher(line);
-                
-                int scanNo = 0;
-                if(m.find()){
-                    scanNo = Integer.parseInt(m.group());
-                }
-                
-                //determine highest intensity
-                //store input (if meets threshold) in string to be retrieved later
-                //input contains lines with valid m/z values
-                //peaks contains all lines of input
-                
-                String input = "";
-                ArrayList<String> peaks = new ArrayList<String>();
-                
-                float maxIntensity = 0;
-		while (!line.equals("END IONS") && mgf.ready()) {
-			line = mgf.readLine();
+        	String line = mgf.readLine().toUpperCase();
 
-			if (line.equals("END IONS") || !mgf.ready()) {
-                            break;
-			}
-                        
-                        peaks.add(line);
-                        String[] pair = line.split(" ");
-                        float val1 = Float.parseFloat(pair[0]);
-                        float val2 = Float.parseFloat(pair[1]);
-                        
-                        //reduces # of lines saves to be read later
-                        //only saves if mass within threshold
-                        if(Math.abs(val1 - mass) <= threshold){
-                            input+=line+",";
-                        }
-                        
-                        maxIntensity = Math.max(maxIntensity, val2);
-                        
-		}
-                
-                //now processing input if it met the mass threshold
-                
-                //if met, start printing out all m/z & intensities
-                boolean showAllPeaks = false;
-                
-                String[] inputz = {};
-                if(input.length()>0){
-                    
-                    inputz = input.split(",");
-                    for(String linez: inputz){
-                        String[] pair = linez.split(" ");
-                        
-                        float val1 = Float.parseFloat(pair[0]);
-                        float val2 = Float.parseFloat(pair[1]);
-                    
-                        float percentIntensity = val2/maxIntensity;
-                    
-                        if (percentIntensity >= (minIntensity/100)) {
-                            y = y +" "+pair[0] + " " + pair[1] + " ("+ percentIntensity*100 + "%) " + "\n";
-                        
-                            showAllPeaks = true;
-                        }
-                    
-                    }
-                }
-                
-                if(!fast){
-                if(showAllPeaks){
-                    String newPeaks = "";
-                    
-                    for(int i=0; i<peaks.size(); i++){
-                        String[] lineMZ = peaks.get(i).split(" ");
-                        float allPercentIntensity  = Float.parseFloat(lineMZ[1])/maxIntensity;
-                        newPeaks = lineMZ[0]+" "+lineMZ[1]+" ("+allPercentIntensity*100+"%)\n";
-                        y = y + newPeaks;
-                    }
-                }
-                }
-                
-		if (y.length() > 0) {
-			output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + "PEPMASS: " + pepMass + "\n" + y;
-                        uniqueSpectrumID.add(SpectrumID);
-                        uniqueScanNo.add(scanNo);
-			y = "";
-		}
+        	//goes to first BEGIN IONS before info
+        	while (!line.equals("BEGIN IONS") && mgf.ready()) {
+        		line = mgf.readLine().toUpperCase();
+        	}
+        	if (!mgf.ready()) {
+        		break;
+        	}
 
-	}
+        	//obtaining spectrumID #
+        	while (!line.contains("SPECTRUM")) {
+        		line = mgf.readLine().toUpperCase();
+        	}
+
+        	line = line.substring(line.indexOf("SPECTRUM"));
+        	Pattern p = Pattern.compile("\\d+");
+
+        	Matcher m = p.matcher(line);
+
+        	int SpectrumID = 0;
+        	if (m.find()) {
+        		SpectrumID = Integer.parseInt(m.group());
+        	}
+
+        	//getting pepmass
+        	while (!line.contains("PEPMASS=")) {
+        		line = mgf.readLine().toUpperCase();
+        	}
+        	line = line.substring(line.indexOf("PEPMASS=") + 8);
+        	String[] tempLine = line.split(" ");
+        	double pepMass = Double.parseDouble(tempLine[0]);
+
+        	//getting scan #
+        	while (!line.contains("SCANS=")) {
+        		line = mgf.readLine().toUpperCase();
+        	}
+        	line = line.substring(line.indexOf("SCANS="));
+        	p = Pattern.compile("\\d+");
+        	m = p.matcher(line);
+
+        	int scanNo = 0;
+        	if (m.find()) {
+        		scanNo = Integer.parseInt(m.group());
+        	}
+
+        	//determine highest intensity
+        	//store input (if meets threshold) in string to be retrieved later
+        	//input contains lines with valid m/z values
+        	//peaks contains all lines of input
+
+        	String input = "";
+        	ArrayList < String > peaks = new ArrayList < String > ();
+
+        	float maxIntensity = 0;
+        	while (!line.equals("END IONS") && mgf.ready()) {
+        		line = mgf.readLine();
+
+        		if (line.equals("END IONS") || !mgf.ready()) {
+        			break;
+        		}
+
+        		peaks.add(line);
+        		String[] pair = line.split(" ");
+        		float val1 = Float.parseFloat(pair[0]);
+        		float val2 = Float.parseFloat(pair[1]);
+
+        		//reduces # of lines saves to be read later
+        		//only saves if mass within threshold
+        		if (Math.abs(val1 - mass) <= threshold) {
+        			input += line + ",";
+        		}
+
+        		maxIntensity = Math.max(maxIntensity, val2);
+
+        	}
+
+        	//now processing input if it met the mass threshold
+
+        	//if met, start printing out all m/z & intensities
+        	boolean showAllPeaks = false;
+
+        	String[] inputz = {};
+        	if (input.length() > 0) {
+
+        		inputz = input.split(",");
+        		for (String linez: inputz) {
+        			String[] pair = linez.split(" ");
+
+        			float val1 = Float.parseFloat(pair[0]);
+        			float val2 = Float.parseFloat(pair[1]);
+
+        			float percentIntensity = val2 / maxIntensity;
+
+        			if (percentIntensity >= (minIntensity / 100)) {
+        				y = y + " " + pair[0] + " " + pair[1] + " (" + percentIntensity * 100 + "%) " + "\n";
+
+        				showAllPeaks = true;
+        			}
+
+        		}
+        	}
+
+        	if (!fast) {
+        		if (showAllPeaks) {
+        			String newPeaks = "";
+
+        			for (int i = 0; i < peaks.size(); i++) {
+        				String[] lineMZ = peaks.get(i).split(" ");
+        				float allPercentIntensity = Float.parseFloat(lineMZ[1]) / maxIntensity;
+        				newPeaks = lineMZ[0] + " " + lineMZ[1] + " (" + allPercentIntensity * 100 + "%)\n";
+        				y = y + newPeaks;
+        			}
+        		}
+        	}
+
+        	if (y.length() > 0) {
+        		output += "\nSPECTRUM ID: " + SpectrumID + " SCANS: " + scanNo + "\n" + "PEPMASS: " + pepMass + "\n" + y;
+        		uniqueSpectrumID.add(SpectrumID);
+        		uniqueScanNo.add(scanNo);
+        		y = "";
+        	}
+
+        }
         mgf.close();
-        
-        output += "\n";
-        output += "# Unique SpectrumID: " + uniqueSpectrumID.size()+"\n";
-        output += "# Unique Scan Numbers: " + uniqueScanNo.size()+"\n";
-        output += "\n";
-        
-	long end = System.currentTimeMillis();
-	double time = (end - begin) / 1000.0;
-	output += "Runtime: " + time + " seconds";
 
-	return output;
+        output += "\n";
+        output += "# Unique SpectrumID: " + uniqueSpectrumID.size() + "\n";
+        output += "# Unique Scan Numbers: " + uniqueScanNo.size() + "\n";
+        output += "\n";
 
-    }
+        long end = System.currentTimeMillis();
+        double time = (end - begin) / 1000.0;
+        output += "Runtime: " + time + " seconds";
+
+        return output;
+ }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton fileButton;

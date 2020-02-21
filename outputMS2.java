@@ -1,4 +1,4 @@
- 
+package learn;
 
 import java.awt.Cursor;
 import java.io.*;
@@ -238,18 +238,16 @@ public class outputMS2 extends javax.swing.JFrame {
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
         String userDirLocation = System.getProperty("user.dir");
         File userDir = new File(userDirLocation);
-        
+
         fileChooserMS3 = new javax.swing.JFileChooser(userDir);
         int returnVal = fileChooserMS3.showOpenDialog(this);
 
         File ms3 = fileChooserMS3.getSelectedFile();
 
-        if(ms3!=null&&ms2!=null){
-            System.out.println(ms2.getName()+", "+ms3.getName());
-            fileOut.setText(ms2.getName()+", "+ms3.getName());
-        }
-        else{
-            fileOut.setText("no file selected!");
+        if (ms3 != null && ms2 != null) {
+        	fileOut.setText(ms2.getName() + ", " + ms3.getName());
+        } else {
+        	fileOut.setText("no file selected!");
         }
 
         Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
@@ -259,30 +257,26 @@ public class outputMS2 extends javax.swing.JFrame {
         cursor = new Cursor(Cursor.WAIT_CURSOR);
         this.setCursor(cursor);
         try {
-            outYay2 = compare(ms2, ms3, output, Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()), fast);
-        } 
-        catch (IOException e) {
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            if(peakInput.getText().equals("")){
-                fileOut.setText("Missing Input!");
-                Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
-            }
-            else{
-                fileOut.setText("Unknown Error!");
-                Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-        catch (OutOfMemoryError e){
-            fileOut.setText("out of memory!");
-            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            return;
-        }
-        catch (Exception e){
-            fileOut.setText("unknown error!");
-            Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
-            cursor = new Cursor(Cursor.DEFAULT_CURSOR);
-            return;
+        	outYay2 = compare(ms2, ms3, output, Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()), fast);
+        } catch (IOException e) {
+        	cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        	if (peakInput.getText().equals("")) {
+        		fileOut.setText("Missing Input!");
+        		Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
+        	} else {
+        		fileOut.setText("Unknown Error!");
+        		Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
+        	}
+        } catch (OutOfMemoryError e) {
+        	fileOut.setText("out of memory!");
+        	Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
+        	cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        	return;
+        } catch (Exception e) {
+        	fileOut.setText("unknown error!");
+        	Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
+        	cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        	return;
         }
 
         new outputMS3(outYay2, ms3.getName(), time).setVisible(true);
@@ -324,183 +318,168 @@ public class outputMS2 extends javax.swing.JFrame {
     }
 
     public String compare(File ms2, File ms3, String ms2output, int n, double daltonInput, boolean fast) throws IOException, FileNotFoundException{
-        
         long begin = System.currentTimeMillis();
-        
+
         Pattern p = Pattern.compile("\\d+");
         String output = "";
-        TreeSet<String> uniqueMatches = new TreeSet<String>();
-        ArrayList<String[]> ms3Arry = new ArrayList<String[]>();
-                
-        output+=time+"\n";
-        output+="MS3 File: "+ms3.getName()+"\n";
-        output+="# top peaks: "+n+"\n";
-        output+="dalton threshold: "+daltonInput+"\n\n";
-        
+        TreeSet < String > uniqueMatches = new TreeSet < String > ();
+        ArrayList < String[] > ms3Arry = new ArrayList < String[] > ();
+
+        output += time + "\n";
+        output += "MS3 File: " + ms3.getName() + "\n";
+        output += "# top peaks: " + n + "\n";
+        output += "dalton threshold: " + daltonInput + "\n\n";
+
         BufferedReader readms2 = new BufferedReader(new StringReader(ms2output));
         String line = "";
-       
+
         BufferedReader readms3 = new BufferedReader(new FileReader(ms3));
-        
+
         //try to find the appropriate column
         //"First Scan"
         //"m/z [Da]"
         //"MH+ [Da]"
         //"Charge"
-        String[] heading = readms3.readLine().split("\"\t\"");
+        String[] heading = readms3.readLine().split("\t");
         int scanCol = -1;
-        int massCol = -1;
+        int precursorCol = -1;
         int mhCol = -1;
         int chargeCol = -1;
-        for(int i=0; i<heading.length; i++){
-            if(heading[i].equals("First Scan"))
-                scanCol = i;
-            if(heading[i].equals("m/z [Da]"))
-                massCol = i;
-            if(heading[i].equals("MH+ [Da]"))
-                mhCol = i;
-            if(heading[i].equals("Charge"))
-                chargeCol = i;
+        for (int i = 0; i < heading.length; i++) {
+        	if (heading[i].equals("ScanNum"))
+        		scanCol = i;
+        	if (heading[i].equals("Precursor"))
+        		precursorCol = i;
+        	if (heading[i].equals("Charge"))
+        		chargeCol = i;
         }
-        
-        while(readms3.ready()){
-            ms3Arry.add(readms3.readLine().split("\"\t\""));
+        while (readms3.ready()) {
+        	ms3Arry.add(readms3.readLine().split("\t"));
         }
-        
-        while (readms2.ready()){
-           
-           //stop at end of file
-           if(line.contains("Runtime") || line.contains("# Unique")){
-               break;
-           }
-           
-           if(line.contains("SCANS")){
-               line = readms2.readLine().toUpperCase();
-           }
-           
-           //travel to the next set of [m/z][intensity] pairs
-           while (!line.contains("SCANS") && !line.contains("RUNTIME")) {
-               line = readms2.readLine().toUpperCase();
-           }
-           if(line.contains("RUNTIME")){
-               break;
-           }
-           
-           //get the scan number
-           line = line.substring(line.indexOf("SCANS:"));
-           //p = Pattern.compile("\\d+");
-           Matcher m = p.matcher(line);
-                
-           int ms2ScanNo = 0;
-           if(m.find()){
-                ms2ScanNo = Integer.parseInt(m.group());
-            }
-           
-           //get pepmass
-           line = readms2.readLine().toUpperCase();
-           line = line.substring(line.indexOf("PEPMASS: ")+9);
-           double pepMass = Double.parseDouble(line);
-           
-           //go past initial line w spectrum no
-           readms2.readLine();
 
-           
-           for(int i=0; i<ms3Arry.size(); i++){
-               
-               String[] pair = ms3Arry.get(i);
+        while (readms2.ready()) {
 
-               int ms3ScanNo = Integer.parseInt(pair[scanCol]);
-               int scanDiff = ms3ScanNo - ms2ScanNo;
-               
-               if(scanDiff <= n && scanDiff >= 1){
-                   line = readms2.readLine();
-                   
-                   while(!line.equals("") && !line.contains("#") && !line.contains("SPECTRUM")){
-                       
-                       double ms2mass = -1;
-                       double ms3mass = -1;
-                       double massDiff = -1;
-                       boolean withinDiff = true;
-                       if(!fast){
-                       String[] ms2MassLines = line.split(" ");
-                       ms2mass = Double.parseDouble(ms2MassLines[0]);
-                       ms3mass = Double.parseDouble(pair[massCol]);
-                       massDiff = ms2mass - ms3mass;
-                       withinDiff = Math.abs(massDiff) <= .001;
-                       }
-                           
-                           if(withinDiff){
-                                //pepMass, calcMass
+        	//stop at end of file
+        	if (line.contains("Runtime") || line.contains("# Unique")) {
+        		break;
+        	}
 
-                                double charge = Integer.parseInt(pair[chargeCol]);
-                                double calcMass = (Double.parseDouble(pair[mhCol]) + 569.2 + 1.0078*charge)/(charge+1);
-                                double pepDiff = Math.abs(pepMass-calcMass);
+        	if (line.contains("SCANS")) {
+        		line = readms2.readLine().toUpperCase();
+        	}
 
-                                if(pepDiff <= daltonInput){
-                                //match ms2 mass w ms3 mass and print out all
-                                BufferedReader readOrigFile = new BufferedReader(new FileReader(ms2));
-                                String origLine = "";
+        	//travel to the next set of [m/z][intensity] pairs
+        	while (!line.contains("SCANS") && !line.contains("RUNTIME")) {
+        		line = readms2.readLine().toUpperCase();
+        	}
+        	if (line.contains("RUNTIME")) {
+        		break;
+        	}
 
-                                while(!origLine.contains("SCANS="+ms2ScanNo)){
-                                    origLine = readOrigFile.readLine();
-                                }
-                                
-                                boolean massMatch = false;
-                                ArrayList<String> matchedLines = new ArrayList<String>();
-                                origLine = readOrigFile.readLine();
-                                while(!origLine.equals("") && !origLine.contains("END")){
-                                    System.out.println("original line "+origLine);
-                                    String[] origMassLines = origLine.split(" ");
-                                    ms2mass = Double.parseDouble(origMassLines[0]);
-                                    ms3mass = Double.parseDouble(pair[massCol]);
-                                    massDiff = ms2mass - ms3mass;
-                                    if(Math.abs(massDiff) <= .001){
-                                        matchedLines.add(origLine);
-                                        massMatch = true;
-                                    }
-                                    origLine = readOrigFile.readLine();
-                                }
+        	//get the scan number
+        	line = line.substring(line.indexOf("SCANS:"));
+        	//p = Pattern.compile("\\d+");
+        	Matcher m = p.matcher(line);
 
-                                if(withinDiff){
-                                String match = "MS2#: "+ms2ScanNo+" MS3#: "+ms3ScanNo+"\n"+
-                                                  "peptide mass: "+pepMass+"\n"+
-                                                  "calculated mass: "+calcMass+"\n"+
-                                                  "daltons: "+pepDiff+"\n";
-                                if(fast){
-                                    match = match+"MS2: ";
-                                    for(int j=0; j<matchedLines.size(); j++){
-                                        match = match + matchedLines.get(j) + "\n";
-                                    }
-                                    match = match+"MS3: "+ms3mass+"\n";
-                                }
-                                match += "\n";
-                                uniqueMatches.add(match);
-                                }
-                                }
-                          }
-                           
-                           line = readms2.readLine();
-                           if(line.equals("") && line.contains("#") && line.contains("Runtime")){
-                                break;
-                           }
-                           
-                       }
-                   line = readms2.readLine();
-                   }
-               }
-               
-           }
-        
+        	int ms2ScanNo = 0;
+        	if (m.find()) {
+        		ms2ScanNo = Integer.parseInt(m.group());
+        	}
+
+        	//get pepmass
+        	line = readms2.readLine().toUpperCase();
+        	line = line.substring(line.indexOf("PEPMASS: ") + 9);
+        	double pepMass = Double.parseDouble(line);
+
+        	//go past initial line w spectrum no
+        	readms2.readLine();
+
+
+        	for (int i = 0; i < ms3Arry.size(); i++) {
+
+        		String[] pair = ms3Arry.get(i);
+
+        		int ms3ScanNo = Integer.parseInt(pair[scanCol]);
+        		int scanDiff = ms3ScanNo - ms2ScanNo;
+
+        		if (scanDiff <= n && scanDiff >= 1) {
+        			line = readms2.readLine();
+
+        			while (!line.equals("") && !line.contains("#") && !line.contains("SPECTRUM")) {
+
+        				double ms2mass = -1;
+        				double ms3mass = -1;
+        				double massDiff = -1;
+
+        				//pepMass, calcMass
+
+        				double charge = Integer.parseInt(pair[chargeCol]);
+                                        double precursor = Double.parseDouble(pair[precursorCol]);
+        				double calcMass = (precursor*charge + 569.2 + 1.0078) / (charge + 1);
+        				double pepDiff = Math.abs(pepMass - calcMass);
+
+        				if (pepDiff <= daltonInput) {
+        					//match ms2 mass w ms3 mass and print out all
+        					BufferedReader readOrigFile = new BufferedReader(new FileReader(ms2));
+        					String origLine = "";
+
+        					while (!origLine.contains("SCANS=" + ms2ScanNo)) {
+        						origLine = readOrigFile.readLine();
+        					}
+
+        					boolean massMatch = false;
+        					ArrayList < String > matchedLines = new ArrayList < String > ();
+        					origLine = readOrigFile.readLine();
+        					while (!origLine.equals("") && !origLine.contains("END")) {
+        						String[] origMassLines = origLine.split(" ");
+        						ms2mass = Double.parseDouble(origMassLines[0]);
+        						ms3mass = Double.parseDouble(pair[precursorCol]);
+        						massDiff = ms2mass - ms3mass;
+        						if (Math.abs(massDiff) <= .001) {
+        							matchedLines.add(origLine);
+        							massMatch = true;
+        						}
+        						origLine = readOrigFile.readLine();
+        					}
+                                                
+        					if (massMatch) {
+        						String match = "MS2#: " + ms2ScanNo + " MS3#: " + ms3ScanNo + "\n" +
+        							"peptide mass: " + pepMass + "\n" +
+        							"calculated mass: " + calcMass + "\n" +
+        							"daltons: " + pepDiff + "\n";
+        						if (fast) {
+        							match = match + "MS2: ";
+        							for (int j = 0; j < matchedLines.size(); j++) {
+        								match = match + matchedLines.get(j) + "\n";
+        							}
+        							match = match + "MS3: " + ms3mass + "\n";
+        						}
+        						match += "\n";
+        						uniqueMatches.add(match);
+        					}
+        				}
+
+        				line = readms2.readLine();
+        				if (line.equals("") && line.contains("#") && line.contains("Runtime")) {
+        					break;
+        				}
+
+        			}
+        			line = readms2.readLine();
+        		}
+        	}
+
+        }
+
         Iterator it = uniqueMatches.iterator();
-        while(it.hasNext()){
-            output += (String) it.next();
+        while (it.hasNext()) {
+        	output += (String) it.next();
         }
-            
-            long end = System.currentTimeMillis();
-            double timez = (end - begin) / 1000.0;
-            output += "Runtime: " + timez + " seconds";
-            return output;
-        
+
+        long end = System.currentTimeMillis();
+        double timez = (end - begin) / 1000.0;
+        output += "Runtime: " + timez + " seconds";
+        return output;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton compareMS3;
