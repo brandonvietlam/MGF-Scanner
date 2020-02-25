@@ -80,7 +80,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
 
         massthresholdexlabel.setText("(ex: 1.0)");
 
-        minintensityexlabel.setText("(ex: 20.0)");
+        minintensityexlabel.setText("(ex: 10.0)");
 
         masslabel.setText("mass");
 
@@ -399,6 +399,9 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         	if (m.find()) {
         		scanNo = Integer.parseInt(m.group());
         	}
+                if(scanNo == 44311){
+                    System.out.println("we at the end!");
+                }
 
         	//determine highest intensity
         	//store input (if meets threshold) in string to be retrieved later

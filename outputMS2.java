@@ -125,7 +125,7 @@ public class outputMS2 extends javax.swing.JFrame {
 
         nLabel.setText("# top MS2 peaks");
 
-        nexLabel.setText("(ex: 3)");
+        nexLabel.setText("(ex: 2)");
 
         daltonInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         daltonInput.addActionListener(new java.awt.event.ActionListener() {
@@ -236,6 +236,9 @@ public class outputMS2 extends javax.swing.JFrame {
     }//GEN-LAST:event_peakInputActionPerformed
 
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
+        Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
+        this.setCursor(cursor);
+        
         String userDirLocation = System.getProperty("user.dir");
         File userDir = new File(userDirLocation);
 
@@ -249,17 +252,14 @@ public class outputMS2 extends javax.swing.JFrame {
         } else {
         	fileOut.setText("no file selected!");
         }
-
-        Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
-        this.setCursor(cursor);
-
+        
         String outYay2 = null;
-        cursor = new Cursor(Cursor.WAIT_CURSOR);
-        this.setCursor(cursor);
+        
         try {
+                cursor = new Cursor(Cursor.WAIT_CURSOR);
+                this.setCursor(cursor);
         	outYay2 = compare(ms2, ms3, output, Integer.parseInt(peakInput.getText()), Double.parseDouble(daltonInput.getText()), fast);
         } catch (IOException e) {
-        	cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         	if (peakInput.getText().equals("")) {
         		fileOut.setText("Missing Input!");
         		Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
@@ -270,7 +270,6 @@ public class outputMS2 extends javax.swing.JFrame {
         } catch (OutOfMemoryError e) {
         	fileOut.setText("out of memory!");
         	Logger.getLogger(Scan_MGFGUI.class.getName()).log(Level.SEVERE, null, e);
-        	cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         	return;
         } catch (Exception e) {
         	fileOut.setText("unknown error!");
@@ -319,7 +318,7 @@ public class outputMS2 extends javax.swing.JFrame {
 
     public String compare(File ms2, File ms3, String ms2output, int n, double daltonInput, boolean fast) throws IOException, FileNotFoundException{
         long begin = System.currentTimeMillis();
-
+        int numMatches = 0;
         Pattern p = Pattern.compile("\\d+");
         String output = "";
         TreeSet < String > uniqueMatches = new TreeSet < String > ();
@@ -360,19 +359,19 @@ public class outputMS2 extends javax.swing.JFrame {
         while (readms2.ready()) {
 
         	//stop at end of file
-        	if (line.contains("Runtime") || line.contains("# Unique")) {
+        	if (line == null || line.contains("Runtime") || line.contains("# Unique")) {
         		break;
         	}
 
-        	if (line.contains("SCANS")) {
+        	if (line != null && line.contains("SCANS")) {
         		line = readms2.readLine().toUpperCase();
         	}
 
         	//travel to the next set of [m/z][intensity] pairs
-        	while (!line.contains("SCANS") && !line.contains("RUNTIME")) {
+        	while (line !=null && !line.contains("SCANS") && !line.contains("RUNTIME")) {
         		line = readms2.readLine().toUpperCase();
         	}
-        	if (line.contains("RUNTIME")) {
+        	if (line == null || line.contains("RUNTIME")) {
         		break;
         	}
 
@@ -400,13 +399,15 @@ public class outputMS2 extends javax.swing.JFrame {
         		String[] pair = ms3Arry.get(i);
 
         		int ms3ScanNo = Integer.parseInt(pair[scanCol]);
+                        if(ms3ScanNo == 10932){
+                            System.out.println("we eneed!");
+                        }
         		int scanDiff = ms3ScanNo - ms2ScanNo;
-
-        		if (scanDiff <= n && scanDiff >= 1) {
-        			line = readms2.readLine();
-
-        			while (!line.equals("") && !line.contains("#") && !line.contains("SPECTRUM")) {
-
+                        scanDiff = Math.abs(scanDiff);
+                        
+        		if (scanDiff <= n) {
+                            
+        			while (!line.equals("") && !line.contains("#")) {
         				double ms2mass = -1;
         				double ms3mass = -1;
         				double massDiff = -1;
@@ -417,7 +418,7 @@ public class outputMS2 extends javax.swing.JFrame {
                                         double precursor = Double.parseDouble(pair[precursorCol]);
         				double calcMass = (precursor*charge + 569.2 + 1.0078) / (charge + 1);
         				double pepDiff = Math.abs(pepMass - calcMass);
-
+                                        
         				if (pepDiff <= daltonInput) {
         					//match ms2 mass w ms3 mass and print out all
         					BufferedReader readOrigFile = new BufferedReader(new FileReader(ms2));
@@ -435,13 +436,14 @@ public class outputMS2 extends javax.swing.JFrame {
         						ms2mass = Double.parseDouble(origMassLines[0]);
         						ms3mass = Double.parseDouble(pair[precursorCol]);
         						massDiff = ms2mass - ms3mass;
-        						if (Math.abs(massDiff) <= .001) {
+                                                        
+        						if (Math.abs(massDiff) <= .001){                                                           
         							matchedLines.add(origLine);
         							massMatch = true;
         						}
         						origLine = readOrigFile.readLine();
         					}
-                                                
+
         					if (massMatch) {
         						String match = "MS2#: " + ms2ScanNo + " MS3#: " + ms3ScanNo + "\n" +
         							"peptide mass: " + pepMass + "\n" +
@@ -460,7 +462,7 @@ public class outputMS2 extends javax.swing.JFrame {
         				}
 
         				line = readms2.readLine();
-        				if (line.equals("") && line.contains("#") && line.contains("Runtime")) {
+        				if (line == null || line.equals("") || line.contains("#") || line.contains("Runtime")) {
         					break;
         				}
 
@@ -478,6 +480,7 @@ public class outputMS2 extends javax.swing.JFrame {
 
         long end = System.currentTimeMillis();
         double timez = (end - begin) / 1000.0;
+        output += "# Unique Matches: "+uniqueMatches.size()+"\n";
         output += "Runtime: " + timez + " seconds";
         return output;
     }
