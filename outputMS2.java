@@ -405,7 +405,7 @@ public class outputMS2 extends javax.swing.JFrame {
                         
         		if (scanDiff <= n) {
                             
-        			while (!line.equals("") && !line.contains("#")) {
+        			while (line != null && !line.equals("") && !line.contains("#")) {
         				double ms2mass = -1;
         				double ms3mass = -1;
         				double massDiff = -1;
