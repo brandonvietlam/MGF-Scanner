@@ -399,9 +399,7 @@ public class outputMS2 extends javax.swing.JFrame {
         		String[] pair = ms3Arry.get(i);
 
         		int ms3ScanNo = Integer.parseInt(pair[scanCol]);
-                        if(ms3ScanNo == 10932){
-                            System.out.println("we eneed!");
-                        }
+
         		int scanDiff = ms3ScanNo - ms2ScanNo;
                         scanDiff = Math.abs(scanDiff);
                         
@@ -436,7 +434,7 @@ public class outputMS2 extends javax.swing.JFrame {
         						ms2mass = Double.parseDouble(origMassLines[0]);
         						ms3mass = Double.parseDouble(pair[precursorCol]);
         						massDiff = ms2mass - ms3mass;
-                                                        
+
         						if (Math.abs(massDiff) <= .001){                                                           
         							matchedLines.add(origLine);
         							massMatch = true;
