@@ -19,6 +19,7 @@ public class outputMS2 extends javax.swing.JFrame {
     private String fileName;
     private File ms2;
     private String time;
+    private ArrayList<Integer> scanMatches;
     
     public outputMS2() {
         fileName = "error: no File!";
@@ -34,7 +35,6 @@ public class outputMS2 extends javax.swing.JFrame {
         ms2 = y;
         time = z.replaceAll(":", ";");
         initComponents();
-        
     }
     
     public outputMS2(File x, String y) throws FileNotFoundException, IOException{
@@ -202,12 +202,12 @@ public class outputMS2 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(fileChooserMS3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 533, Short.MAX_VALUE)))
+                    .addGap(0, 530, Short.MAX_VALUE)))
         );
 
         pack();
@@ -236,6 +236,8 @@ public class outputMS2 extends javax.swing.JFrame {
     }//GEN-LAST:event_peakInputActionPerformed
 
     private void compareMS3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compareMS3ActionPerformed
+        scanMatches = new ArrayList<Integer>();
+        
         Cursor cursor = new Cursor(Cursor.WAIT_CURSOR);
         this.setCursor(cursor);
         
@@ -278,7 +280,7 @@ public class outputMS2 extends javax.swing.JFrame {
         	return;
         }
 
-        new outputMS3(outYay2, ms3.getName(), time).setVisible(true);
+        new outputMS3(outYay2, ms3.getName(), time, scanMatches, ms3).setVisible(true);
 
         cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         this.setCursor(cursor);
@@ -447,6 +449,7 @@ public class outputMS2 extends javax.swing.JFrame {
         							"peptide mass: " + pepMass + "\n" +
         							"calculated mass: " + calcMass + "\n" +
         							"daltons: " + pepDiff + "\n";
+                                                        scanMatches.add(ms3ScanNo);
         						if (fast) {
         							match = match + "MS2: ";
         							for (int j = 0; j < matchedLines.size(); j++) {
