@@ -1,4 +1,4 @@
- package learn;
+  
 
 import java.awt.Cursor;
 import java.io.*;
@@ -39,7 +39,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MGF Scanner");
+        setTitle("NTermFinder");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
@@ -174,7 +174,7 @@ public class Scan_MGFGUI extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        jLabel2.setText("2020 Brandon Lam");
+        jLabel2.setText("2021 Brandon Lam");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
